@@ -2,40 +2,58 @@
 # Licensed under 3-Clause BSD license available in the License file. Copyright (c) 2021-2022 iRobot Corporation. All rights reserved.
 #
 from irobot_edu_sdk.backend.bluetooth import Bluetooth
-from irobot_edu_sdk.robots import event, hand_over, Color, Robot, Root, Create3
-from irobot_edu_sdk.music import Note
+from irobot_edu_sdk.robots import event, Create3
+import asyncio
+import os
 
+task = None
+cancelled = False
 filename = input("Enter the filename\n")
 if len(filename) < 0:
     filename = input("Enter the filename\n")
+distance = input("Enter the distance\n")
+filename = f"{filename}.csv"
 
-out_file = open(f"{filename}.csv", "a")
+out_file = open(filename, "a")
+if not os.path.isfile("filename"):
+    out_file.write("distance, left3, left2, left1, M, right1, right2, right3\n")
+
 name = "CapstoneRobot1"
 robot = Create3(Bluetooth(name))
 
-out_file.write("left3, left2, left1, M, right1, right2, right3\n")
 @event(robot.when_play)
 async def play(robot):
+    global cancelled
+    task = asyncio.create_task(move(robot))
     while True:
         sensors = (await robot.get_ir_proximity()).sensors
         sensor_string = str(sensors)
         # sensor_string = sensor_string[1:len(sensor_string) - 1] + "\n"
         sensor_string = sensor_string[1:len(sensor_string) - 1]
         print(sensor_string)
+        if sensors[3] > 10:
+            if not cancelled:
+                task.cancel()
+                print("cancelled")
+                cancelled = True
         # out_file.write(sensor_string)
-        distance = 16
 
-        await robot.navigate_to(0, distance)
-        await robot.navigate_to(distance, distance)
-        await robot.navigate_to(distance, 0)
-        await robot.navigate_to(0, 0)
-        print(sensor_string)
+async def move(robot):
+        curr = 0
+        distance = 100
+        await robot.set_wheel_speeds(5, -5)
+        while True:
+            await robot.navigate_to(0, distance)
+            await robot.navigate_to(distance, 0)
+            curr += 1
+        # await robot.navigate_to(distance, distance)
+        # await robot.navigate_to(distance, 0)
+        # await robot.navigate_to(0, 0)
         
-        distance = -distance
+        # distance = -distance
 
-        await robot.navigate_to(0, distance)
-        await robot.navigate_to(distance, distance)
-        await robot.navigate_to(distance, 0)
-        await robot.navigate_to(0, 0)
-
+        # await robot.navigate_to(0, distance)
+        # await robot.navigate_to(distance, distance)
+        # await robot.navigate_to(distance, 0)
+        # await robot.navigate_to(0, 0)    
 robot.play()
