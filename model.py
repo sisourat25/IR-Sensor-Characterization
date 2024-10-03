@@ -82,20 +82,21 @@ class IRDistanceModel(nn.Module):
 
 model = IRDistanceModel()
 
-criterion = nn.MSELoss()
+criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-
 # Train the model
 num_epochs = 50
 for epoch in range(num_epochs):
     running_loss = 0.0
-    for inputs, targets in dataloader:
+    for inputs, distances in dataloader:
         optimizer.zero_grad()
+        
         outputs = model(inputs)
-        loss = criterion(outputs, targets.unsqueeze(1)) 
+        bin_indices = distances.round().long()
+        loss = criterion(outputs, bin_indices)
+        
         loss.backward()
         optimizer.step()
-        running_loss += loss.item()
     
     print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {running_loss/len(dataloader):.4f}")
 
