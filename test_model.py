@@ -20,7 +20,6 @@ def get_data():
     
     with open("browncardboard.csv", "r") as file:
         reader = csv.DictReader(file)  # Use DictReader to read the file as a dictionary for each row
-        print(reader.fieldnames)
         for row in reader:
             # Collect IR intensity values (left3 to right3)
             ir_values = [
@@ -38,13 +37,11 @@ def get_data():
 
             # Append the corresponding distance
             data['distance'].append(int(row['distance']))
-
     return data
         
-    exit()
-# Example data: 7 IR intensity values and corresponding distances (some missing)
-
+    
 data = get_data()
+
 # Format data into a DataFrame
 df = pd.DataFrame(data)
 
@@ -54,8 +51,6 @@ df_train['distance'] = df_train['distance'].fillna(0)
 
 # Create a DataFrame with only the IR readings for input
 df_train_ir = pd.DataFrame(df_train['IR_intensity'].tolist())
-
-print(df_train_ir)
 
 # Dataset class to handle loading IR data and corresponding distance bins
 class IRDistanceDataset(Dataset):
@@ -97,7 +92,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Training loop
-num_epochs = 50
+num_epochs = 2
 for epoch in range(num_epochs):
     running_loss = 0.0
     for inputs, distances in dataloader:
@@ -116,7 +111,6 @@ for epoch in range(num_epochs):
         running_loss += loss.item()
 
     print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {running_loss/len(dataloader):.4f}")
-
 print("Training completed.")
 
 # Test the model on new IR intensity data

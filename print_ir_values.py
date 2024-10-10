@@ -11,12 +11,19 @@ cancelled = False
 filename = input("Enter the filename\n")
 if len(filename) < 0:
     filename = input("Enter the filename\n")
-distance = input("Enter the distance\n")
+    
+"""
+Example Usage:
+Enter the grid squares the object is in
+a1,a2,a3,b3 <-- User Input
+['a1', 'a2', 'a3', 'b3']
+"""
+zones = input("Enter the grid squares the object is in\n").split(",")
 filename = f"{filename}.csv"
 
 out_file = open(filename, "a")
-if not os.path.isfile("filename"):
-    out_file.write("distance, left3, left2, left1, M, right1, right2, right3\n")
+if not os.path.isfile(filename):
+    out_file.write("zones, left3, left2, left1, M, right1, right2, right3\n")
 
 name = "CapstoneRobot1"
 robot = Create3(Bluetooth(name))
@@ -24,18 +31,13 @@ robot = Create3(Bluetooth(name))
 @event(robot.when_play)
 async def play(robot):
     global cancelled
-    task = asyncio.create_task(move(robot))
+    # task = asyncio.create_task(move(robot))
     while True:
         sensors = (await robot.get_ir_proximity()).sensors
         sensor_string = str(sensors)
         # sensor_string = sensor_string[1:len(sensor_string) - 1] + "\n"
-        sensor_string = sensor_string[1:len(sensor_string) - 1]
+        sensor_string = f"{zones},{sensor_string[1:len(sensor_string) - 1]}"
         print(sensor_string)
-        if sensors[3] > 10:
-            if not cancelled:
-                task.cancel()
-                print("cancelled")
-                cancelled = True
         # out_file.write(sensor_string)
 
 async def move(robot):
