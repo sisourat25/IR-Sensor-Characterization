@@ -4,3 +4,4 @@ ir_env/
 adaboost-main/
 .DS_Store
 __pycache__/
+output.txt
