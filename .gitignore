@@ -1,3 +1,6 @@
 ir_env/
 *.csv
 *.pth
+adaboost-main/
+.DS_Store
+__pycache__/

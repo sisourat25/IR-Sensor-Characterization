@@ -8,6 +8,7 @@ import os
 
 task = None
 cancelled = False
+file_exists = False
 filename = input("Enter the filename\n")
 if len(filename) < 0:
     filename = input("Enter the filename\n")
@@ -21,24 +22,34 @@ a1,a2,a3,b3 <-- User Input
 zones = input("Enter the grid squares the object is in\n").split(",")
 filename = f"{filename}.csv"
 
+if os.path.isfile(filename):
+    file_exists = True
+    
 out_file = open(filename, "a")
-if not os.path.isfile(filename):
-    out_file.write("zones, left3, left2, left1, M, right1, right2, right3\n")
+if not file_exists:
+    out_file.write("zones,left3,left2,left1,M,right1,right2,right3\n")
 
 name = "CapstoneRobot1"
 robot = Create3(Bluetooth(name))
-
+rows = 0
+printed = False
 @event(robot.when_play)
 async def play(robot):
-    global cancelled
+    global cancelled,rows, printed
     # task = asyncio.create_task(move(robot))
     while True:
         sensors = (await robot.get_ir_proximity()).sensors
         sensor_string = str(sensors)
-        # sensor_string = sensor_string[1:len(sensor_string) - 1] + "\n"
-        sensor_string = f"{zones},{sensor_string[1:len(sensor_string) - 1]}"
-        print(sensor_string)
-        # out_file.write(sensor_string)
+        sensor_string = f"\"{zones}\",{sensor_string[1:len(sensor_string) - 1]}\n"
+        out_file.write(sensor_string)
+        # print(sensor_string)
+        rows+=1
+        while rows >= 500:
+            if not printed:
+                await robot.play_note(440, 0.25)
+                printed = True
+                out_file.close()
+            pass
 
 async def move(robot):
         curr = 0
@@ -47,15 +58,5 @@ async def move(robot):
         while True:
             await robot.navigate_to(0, distance)
             await robot.navigate_to(distance, 0)
-            curr += 1
-        # await robot.navigate_to(distance, distance)
-        # await robot.navigate_to(distance, 0)
-        # await robot.navigate_to(0, 0)
-        
-        # distance = -distance
-
-        # await robot.navigate_to(0, distance)
-        # await robot.navigate_to(distance, distance)
-        # await robot.navigate_to(distance, 0)
-        # await robot.navigate_to(0, 0)    
+            curr += 1 
 robot.play()
