@@ -100,7 +100,7 @@ else:
     # Plot Confusion Matrix
     # Note: Confusion matrix for multi-label can be complex. Here, we show it per class.
     for idx, class_label in enumerate(mlb.classes_):
-        cm = confusion_matrix(y_test_filtered[:, idx], y_pred[:, idx])
+        cm = confusion_matrix(y_test_filtered[:, idx], y_pred[:, idx], labels=[0,1])
         plt.figure(figsize=(5, 4))
         sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', cbar=False)
         plt.xlabel('Predicted')
