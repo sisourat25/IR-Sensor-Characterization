@@ -28,27 +28,28 @@ def print_model_predictions(X_test, X_test_filtered, y_pred_labels, y_test_label
     max_pred_label_width = 50
     max_true_label_width = 50
     
-    # Print header
-    header = f"{'Input':<{max_idx_width}} | {'IR Sensor Values':<{max_features_width}} | {'Predicted':<{max_pred_label_width}} | {'Actual':<{max_true_label_width}}"
-    print(header)
-    print('-' * len(header))
-    
-    # Loop and print formatted output
-    for idx, (features, pred_labels, true_labels) in enumerate(zip(X_test_filtered, y_pred_labels, y_test_labels)):
-        # Convert features array to a list of integers
-        features_list = features.astype(int).tolist()
-        # Join features into a string with commas
-        features_str = ','.join(map(str, features_list))
-        # Truncate or pad the features string to fit the column width
-        features_str = features_str[:max_features_width].ljust(max_features_width)
-        # Convert lists to strings
-        pred_labels_str = ', '.join(pred_labels)
-        true_labels_str = ', '.join(true_labels)
-        # Truncate or pad label strings
-        pred_labels_str = pred_labels_str[:max_pred_label_width].ljust(max_pred_label_width)
-        true_labels_str = true_labels_str[:max_true_label_width].ljust(max_true_label_width)
-        # Format the strings with padding
-        print(f"{idx:<{max_idx_width}} | {features_str:<{max_features_width}} | {pred_labels_str:<{max_pred_label_width}} | {true_labels_str:<{max_true_label_width}}")
+    with open("filtered_output.txt", 'w') as file:
+        # Print header
+        header = f"{'Input':<{max_idx_width}} | {'IR Sensor Values':<{max_features_width}} | {'Predicted':<{max_pred_label_width}} | {'Actual':<{max_true_label_width}}\n"
+        file.write(header)
+        file.write('-' * len(header))
+        file.write("\n")
+        # Loop and file.write formatted output
+        for idx, (features, pred_labels, true_labels) in enumerate(zip(X_test_filtered, y_pred_labels, y_test_labels)):
+            # Convert features array to a list of integers
+            features_list = features.astype(int).tolist()
+            # Join features into a string with commas
+            features_str = ','.join(map(str, features_list))
+            # Truncate or pad the features string to fit the column width
+            features_str = features_str[:max_features_width].ljust(max_features_width)
+            # Convert lists to strings
+            pred_labels_str = ', '.join(pred_labels)
+            true_labels_str = ', '.join(true_labels)
+            # Truncate or pad label strings
+            pred_labels_str = pred_labels_str[:max_pred_label_width].ljust(max_pred_label_width)
+            true_labels_str = true_labels_str[:max_true_label_width].ljust(max_true_label_width)
+            # Format the strings with padding
+            file.write(f"{idx:<{max_idx_width}} | {features_str:<{max_features_width}} | {pred_labels_str:<{max_pred_label_width}} | {true_labels_str:<{max_true_label_width}}\n")
 
 # Load the data
 X, y, mlb = dataset()
