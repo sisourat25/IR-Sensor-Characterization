@@ -159,7 +159,9 @@ def show_screen1():
     screen1 = tk.Tk()
     screen1.title("Robot Selection")
 
-
+    screen1.attributes('-topmost', True)
+    screen1.update()
+    
     instruction_label = tk.Label(screen1, text="Select the name of the robot:")
     instruction_label.pack(pady=10)
 
@@ -200,7 +202,9 @@ def show_screen2():
     screen2 = tk.Tk()
     screen2.title("Zone Selection")
 
-
+    screen2.attributes('-topmost', True)
+    screen2.update()
+    
     instruction_label = tk.Label(screen2, text="Select the zones where the object is located:")
     instruction_label.pack(pady=10)
 
@@ -246,7 +250,8 @@ def show_screen3():
     screen3 = tk.Tk()
     screen3.title("File Selection")
 
-
+    screen3.attributes('-topmost', True)
+    screen3.update()
     instruction_label = tk.Label(screen3, text="Select the file to store the data:")
     instruction_label.pack(pady=10)
 
@@ -283,7 +288,8 @@ def show_screen4():
     screen4 = tk.Tk()
     screen4.title("Data Rows Selection")
 
-
+    screen4.attributes('-topmost', True)
+    screen4.update()
     instruction_label = tk.Label(screen4, text="How many rows of data do you want to collect?")
     instruction_label.pack(pady=10)
     
