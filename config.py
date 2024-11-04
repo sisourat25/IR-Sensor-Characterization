@@ -12,6 +12,7 @@ def continue_from_screen1():
     selected_option = robot_var.get()
     if selected_option == "Other":
         robot_name = other_entry.get().strip()
+        print(robot_name)
         if not robot_name:
             messagebox.showerror("Input Error", "Please enter the robot name.")
             return
@@ -23,9 +24,9 @@ def continue_from_screen1():
 
 # Function to move from Screen 2 to Screen 3
 def continue_from_screen2():
-    if not selected_zones:
-        messagebox.showerror("Selection Error", "Please select at least one zone.")
-        return
+    # if not selected_zones:
+        # messagebox.showerror("Selection Error", "Please select at least one zone.")
+        # return
 
     screen2.destroy()
     show_screen3()
@@ -216,8 +217,8 @@ def show_screen2():
     # to click on the zones an object is in
     grid_frame = tk.Frame(main_frame)
     grid_frame.pack()
-    columns = [chr(i) for i in range(ord('a'), ord('k'))] 
-    rows = [str(i) for i in range(1, 5)] 
+    columns = [chr(i) for i in range(ord('a'), ord('q'))] 
+    rows = [str(i) for i in range(1, 10)] 
 
     # Display and format the grid
     zone_buttons = {}
@@ -320,4 +321,3 @@ def get_config_info():
     print(robot_name, selected_zones, filename, num_rows)
     return robot_name, selected_zones, filename, num_rows
 
-get_config_info()
