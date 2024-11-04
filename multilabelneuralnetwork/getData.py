@@ -38,7 +38,7 @@ async def play(robot):
         occupancy_vector = [0] * 153
 
         # Update array based on the input zones
-        for zone in zones:
+        for zone in zones: 
 
             # Convert the zone index and mark 1 with object inside and 0 for no object inside 
             column_index = (ord(zone[0]) - ord('a')) + (int(zone[1:]) - 1) * 17

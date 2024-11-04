@@ -4,7 +4,7 @@ from tensorflow.keras import layers, models
 
 # function to translate from array index to cell index
 def index_to_cell(index):
-    columns = 'ABCDEFGHIJKLMNOPQR'
+    columns = 'ABCDEFGHIJKLMNOPQR' 
     row = index // 17 + 1
     col = index % 17
     return f"{columns[col]}{row}"
