@@ -3,15 +3,26 @@
 #
 from irobot_edu_sdk.backend.bluetooth import Bluetooth
 from irobot_edu_sdk.robots import event, Create3
-from config import get_config_info
 import asyncio
 import os
 import pickle
+import numpy as np
 
-robot_name, selected_zones, filename, num_rows = get_config_info()
 task = None
 cancelled = False
 file_exists = False
+filename = input("Enter the filename\n")
+if len(filename) < 0:
+    filename = input("Enter the filename\n")
+    
+"""
+Example Usage:
+Enter the grid squares the object is in
+a1,a2,a3,b3 <-- User Input
+['a1', 'a2', 'a3', 'b3']
+"""
+zones = input("Enter the grid squares the object is in\n").split(",")
+filename = f"{filename}.csv"
 
 if os.path.isfile(filename):
     file_exists = True
@@ -19,11 +30,24 @@ if os.path.isfile(filename):
 out_file = open(filename, "a")
 if not file_exists:
     out_file.write("zones,left3,left2,left1,M,right1,right2,right3\n")
+    
+with open("multilabel_adaboost_model.pkl", "rb") as f:
+    clf = pickle.load(f)
 
-robot = Create3(Bluetooth(robot_name))
+with open("mlb_object.pkl", "rb") as f:
+    mlb = pickle.load(f)
+    
+single_ir_reading = np.array([0, 1000, 5, 9, 8, 1049, 4])
+single_ir_reading = single_ir_reading.reshape(1, -1)
+y_pred_single = clf.predict(single_ir_reading)
+y_pred_labels_single = mlb.inverse_transform(y_pred_single)
+
+print(f"Predicted zones for the given IR reading: {y_pred_labels_single}")
+exit()
+name = "CapstoneRobot1"
+robot = Create3(Bluetooth(name))
 rows = 0
 printed = False
-
 @event(robot.when_play)
 async def play(robot):
     global cancelled,rows, printed
@@ -31,10 +55,11 @@ async def play(robot):
     while True:
         sensors = (await robot.get_ir_proximity()).sensors
         sensor_string = str(sensors)
-        sensor_string = f"\"{selected_zones}\",{sensor_string[1:len(sensor_string) - 1]}\n"
+        sensor_string = f"\"{zones}\",{sensor_string[1:len(sensor_string) - 1]}\n"
         out_file.write(sensor_string)
+        # print(sensor_string)
         rows+=1
-        while rows >= num_rows:
+        while rows >= 500:
             if not printed:
                 await robot.play_note(440, 0.25)
                 printed = True

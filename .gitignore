@@ -5,3 +5,5 @@ adaboost-main/
 .DS_Store
 __pycache__/
 output.txt
+*.pkl
+*.txt

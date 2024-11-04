@@ -7,6 +7,7 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from sklearn.model_selection import train_test_split
 import numpy as np
 import seaborn as sns
+import pickle
 
 def print_model_predictions(X_test, X_test_filtered, y_pred_labels, y_test_labels, mlb):
     """
@@ -60,13 +61,13 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # Create a mask for test samples where at least one IR sensor value >= 10
-mask = np.any(X_test >= 10, axis=1)
+# mask = np.any(X_test >= 10, axis=1)
 
 # Apply the mask to X_test and y_test
-X_test_filtered = X_test[mask]
-y_test_filtered = y_test[mask]
-# X_test_filtered = X_test
-# y_test_filtered = y_test
+# X_test_filtered = X_test[mask]
+# y_test_filtered = y_test[mask]
+X_test_filtered = X_test
+y_test_filtered = y_test
 
 # Check if the filtered test set is not empty
 if X_test_filtered.shape[0] == 0:
@@ -107,3 +108,11 @@ else:
         plt.ylabel('Actual')
         plt.title(f'Confusion Matrix for {class_label}')
         plt.show()
+    
+    with open("multilabel_adaboost_model.pkl", "wb") as f:
+        pickle.dump(clf, f)
+        print("Model saved")
+    with open("mlb_object.pkl", "wb") as f:
+        pickle.dump(mlb, f)
+        print(mlb)
+        print("mlb saved")

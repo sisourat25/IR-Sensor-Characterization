@@ -13,7 +13,6 @@ def dataset():
     # Labels: Zones (assuming they are lists like "['a1', 'b2']")
     # Convert string representations of lists to actual lists
     data['zones'] = data['zones'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
-    
     # Initialize MultiLabelBinarizer
     mlb = MultiLabelBinarizer()
     y = mlb.fit_transform(data['zones'])

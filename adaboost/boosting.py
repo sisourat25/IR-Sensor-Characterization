@@ -110,7 +110,9 @@ class MultiLabelAdaBoost:
         predictions = []
         for idx, clf in enumerate(self.classifiers):
             pred = clf.predict(X)
+            print(pred)
             # Convert -1/1 to 0/1
             pred_binary = (pred > 0).astype(int)
             predictions.append(pred_binary)
+        # print(np.array(predictions).T)
         return np.array(predictions).T  # Shape: (n_samples, n_classes)
